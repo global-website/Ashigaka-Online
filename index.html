@@ -191,7 +191,7 @@
         let currentQuestion = 0;
         let responses = [];
 
-        // Leviathan-Codes für jeden MBTI
+        // Verschlüsselte MBTI-Typen
         const leviathanCodes = {
             "INTJ": "AB12!",
             "INTP": "CD34?",
@@ -238,7 +238,7 @@
         // Ergebnisse anzeigen
         function displayResults() {
             const mbti = calculateMBTI(responses);
-            const code = leviathanCodes[mbti] || "X";
+            const code = getLeviathanCode(mbti);
             document.getElementById("result-text").textContent = `Ihr Ergebnis: ${code}`;
             document.querySelector(".container").style.display = "none";
             document.querySelector(".result").style.display = "block";
@@ -254,10 +254,34 @@
             return mbti;
         }
 
-        // Ergebnislogik für "X" bei Unsicherheit
+        // Ergebnislogik für Mehrdeutigkeit (zwei mögliche Antworten)
         function getAnswer(response, type1, type2) {
-            if (response === undefined) return "X"; // Wenn keine Entscheidung getroffen wurde, unscharf
+            if (response === undefined) return "X"; // Wenn keine Entscheidung getroffen wurde
             return response ? type1 : type2;
+        }
+
+        // Verschlüsselte Codes zurückgeben, auch bei Unentschlossenheit
+        function getLeviathanCode(mbti) {
+            const mbtiPairs = {
+                "IN": ["INTJ", "INTP"],
+                "EN": ["ENTJ", "ENTP"],
+                "IS": ["ISTJ", "ISFJ"],
+                "ES": ["ESTJ", "ESFJ"],
+                "IT": ["INTJ", "ISTJ"],
+                "ET": ["ENTJ", "ESTJ"],
+                "IF": ["INFP", "INFJ"],
+                "EF": ["ENFP", "ENFJ"],
+                "IP": ["ISTP", "ISFP"],
+                "EP": ["ESTP", "ESFP"],
+            };
+
+            // Rückgabe des verschlüsselten Ergebnisses, wenn Unsicherheit
+            for (let pair in mbtiPairs) {
+                if (mbti.includes(pair)) {
+                    return leviathanCodes[mbtiPairs[pair][0]] + " & " + leviathanCodes[mbtiPairs[pair][1]];
+                }
+            }
+            return leviathanCodes[mbti] || "Kein Ergebnis";
         }
     </script>
 </body>
