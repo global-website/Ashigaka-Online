@@ -238,7 +238,7 @@
         // Ergebnisse anzeigen
         function displayResults() {
             const mbti = calculateMBTI(responses);
-            const code = leviathanCodes[mbti];
+            const code = leviathanCodes[mbti] || "X";
             document.getElementById("result-text").textContent = `Ihr Ergebnis: ${code}`;
             document.querySelector(".container").style.display = "none";
             document.querySelector(".result").style.display = "block";
@@ -247,11 +247,17 @@
         // MBTI-Ergebnis berechnen
         function calculateMBTI(responses) {
             let mbti = "";
-            mbti += responses[0] ? "I" : "E";
-            mbti += responses[1] ? "T" : "F";
-            mbti += responses[2] ? "J" : "P";
-            mbti += responses[3] ? "N" : "S";
+            mbti += getAnswer(responses[0], "I", "E");
+            mbti += getAnswer(responses[1], "T", "F");
+            mbti += getAnswer(responses[2], "J", "P");
+            mbti += getAnswer(responses[3], "N", "S");
             return mbti;
+        }
+
+        // Ergebnislogik für "X" bei Unsicherheit
+        function getAnswer(response, type1, type2) {
+            if (response === undefined) return "X"; // Wenn keine Entscheidung getroffen wurde, unscharf
+            return response ? type1 : type2;
         }
     </script>
 </body>
